@@ -1,0 +1,46 @@
+output:
+  format: "colored-line-number"
+
+linters:
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - typecheck
+    - unused
+    - cyclop
+    - goconst
+    - gofumpt
+    - goimports
+    - misspell
+    - revive
+    - unconvert
+    - unparam
+    - bodyclose
+    - dupl
+    - gomnd
+    - nakedret
+    - tparallel
+    - exhaustive
+    - exhaustruct
+    - forcetypeassert
+    - funlen
+    - gocognit
+    - goprintffuncname
+    - interfacebloat
+    - prealloc
+    - testpackage
+    # - depguard
+
+issues:
+  exclude-use-default: false
+
+linter-setings:
+  revive:
+    ignore-generated-files: true
+    rules:
+      - name: exported
+        disabled: true
+    
