@@ -5,14 +5,15 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Logistics-Coordinators/x/xevent/outbox"
+	"github.com/Logistics-Coordinators/x/xmessage"
+	"github.com/Logistics-Coordinators/x/xmessage/outbox"
 	"github.com/Logistics-Coordinators/x/xretry"
 	"github.com/Logistics-Coordinators/x/xtest"
 	"github.com/stretchr/testify/require"
 )
 
-func newMessage() *outbox.Message {
-	return &outbox.Message{
+func newMessage() *xmessage.Message {
+	return &xmessage.Message{
 		ID:      xtest.RandomString6(),
 		Topic:   xtest.RandomString6(),
 		Type:    xtest.RandomString6(),
@@ -20,8 +21,8 @@ func newMessage() *outbox.Message {
 	}
 }
 
-func newFailableMessage() *outbox.Message {
-	return &outbox.Message{
+func newFailableMessage() *xmessage.Message {
+	return &xmessage.Message{
 		ID:      "fail:" + xtest.RandomString6(),
 		Topic:   xtest.RandomString6(),
 		Type:    xtest.RandomString6(),
@@ -29,8 +30,8 @@ func newFailableMessage() *outbox.Message {
 	}
 }
 
-func newRetriableMessage() *outbox.Message {
-	return &outbox.Message{
+func newRetriableMessage() *xmessage.Message {
+	return &xmessage.Message{
 		ID:      "retry:" + xtest.RandomString6(),
 		Topic:   xtest.RandomString6(),
 		Type:    xtest.RandomString6(),

@@ -5,6 +5,7 @@ import (
 	"context"
 
 	"github.com/Logistics-Coordinators/x/xerrors"
+	"github.com/Logistics-Coordinators/x/xmessage"
 	"github.com/Logistics-Coordinators/x/xretry"
 )
 
@@ -14,18 +15,18 @@ const (
 
 // DataStore is the interface that wraps the Read method
 type DataStore interface {
-	GetUnsentMessages(ctx context.Context) (<-chan *Message, error)
+	GetUnsentMessages(ctx context.Context) (<-chan *xmessage.Message, error)
 	SetAsProcessed(ctx context.Context, id string) error
 }
 
 // EventStream is used to send messages to the message broker
 type EventStream interface {
-	Send(*Message) error
+	Send(*xmessage.Message) error
 }
 
 // FailedMessage is a message that failed to be dispatched
 type FailedMessage struct {
-	Msg *Message
+	Msg *xmessage.Message
 	Err error
 }
 
@@ -62,7 +63,7 @@ func (o *Outbox) Start(ctx context.Context) error {
 }
 
 // StartDispatcher will start dispatching all messages in the xdispatcher.DataStore to xdispatcher.EventStream
-func (o *Outbox) StartDispatcher(ctx context.Context, messages <-chan *Message) {
+func (o *Outbox) StartDispatcher(ctx context.Context, messages <-chan *xmessage.Message) {
 	op := xerrors.Op("outbox.Outbox.StartDispatcher")
 
 	for {

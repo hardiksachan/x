@@ -1,4 +1,4 @@
-package outbox
+package xmessage
 
 // Message is a message that is published to a topic
 type Message struct {

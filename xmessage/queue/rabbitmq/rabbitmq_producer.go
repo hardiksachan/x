@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/Logistics-Coordinators/x/xerrors"
-	"github.com/Logistics-Coordinators/x/xevent/queue"
+	"github.com/Logistics-Coordinators/x/xmessage/queue"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 

@@ -4,15 +4,15 @@ import (
 	"strings"
 
 	"github.com/Logistics-Coordinators/x/xerrors"
-	"github.com/Logistics-Coordinators/x/xevent/outbox"
+	"github.com/Logistics-Coordinators/x/xmessage"
 	"github.com/Logistics-Coordinators/x/xtest"
 )
 
 type testEventStream struct {
-	messages map[string]*outbox.Message
+	messages map[string]*xmessage.Message
 }
 
-func (es *testEventStream) Send(m *outbox.Message) error {
+func (es *testEventStream) Send(m *xmessage.Message) error {
 	if strings.HasPrefix(m.ID, "fail:") {
 		return xerrors.E(xerrors.Message("failed to send message"))
 	}
@@ -35,6 +35,6 @@ func (es *testEventStream) isSent(id string) bool {
 
 func newTestEventStream() *testEventStream {
 	return &testEventStream{
-		messages: make(map[string]*outbox.Message),
+		messages: make(map[string]*xmessage.Message),
 	}
 }

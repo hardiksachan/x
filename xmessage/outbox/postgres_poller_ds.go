@@ -6,6 +6,7 @@ import (
 
 	"github.com/Logistics-Coordinators/x/xerrors"
 	"github.com/Logistics-Coordinators/x/xlog"
+	"github.com/Logistics-Coordinators/x/xmessage"
 	"github.com/google/uuid"
 )
 
@@ -19,7 +20,7 @@ const (
 
 // MessageRepository is the interface that will need to be implemented by the consumer
 type MessageRepository interface {
-	GetUnsentMessage(ctx context.Context, instanceID string, maxRetries int) (*Message, error)
+	GetUnsentMessage(ctx context.Context, instanceID string, maxRetries int) (*xmessage.Message, error)
 	SetAsProcessed(ctx context.Context, id string) error
 	MarkForRetry(ctx context.Context, id string, retryAt time.Time) error
 	ClearLocks(ctx context.Context, instanceID string, obtainedBefore time.Time) error
@@ -91,7 +92,7 @@ func NewPostgresPoller(r MessageRepository, p *PollingPolicy) *PostgresPoller {
 	}
 }
 
-func (p *PostgresPoller) startPolling(ctx context.Context, messages chan<- *Message) {
+func (p *PostgresPoller) startPolling(ctx context.Context, messages chan<- *xmessage.Message) {
 	op := xerrors.Op("outbox.PostgresPoller.startPolling")
 
 	for {
@@ -121,8 +122,8 @@ func (p *PostgresPoller) clearLocks(ctx context.Context) {
 }
 
 // GetUnsentMessages will return all unsent messages
-func (p *PostgresPoller) GetUnsentMessages(ctx context.Context) (<-chan *Message, error) {
-	messages := make(chan *Message)
+func (p *PostgresPoller) GetUnsentMessages(ctx context.Context) (<-chan *xmessage.Message, error) {
+	messages := make(chan *xmessage.Message)
 
 	go p.startPolling(ctx, messages)
 	go p.clearLocks(ctx)

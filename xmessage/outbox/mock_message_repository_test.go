@@ -5,11 +5,11 @@ import (
 	"time"
 
 	"github.com/Logistics-Coordinators/x/xerrors"
-	"github.com/Logistics-Coordinators/x/xevent/outbox"
+	"github.com/Logistics-Coordinators/x/xmessage"
 )
 
 type memMessage struct {
-	message     outbox.Message
+	message     xmessage.Message
 	attempts    int
 	nextRetryAt time.Time
 	lockedBy    string
@@ -26,7 +26,7 @@ func newMockMessageRepository() *mockMessageRepository {
 	}
 }
 
-func (m *mockMessageRepository) AddMessage(_ context.Context, msg outbox.Message) error {
+func (m *mockMessageRepository) AddMessage(_ context.Context, msg xmessage.Message) error {
 	op := xerrors.Op("outbox.mockMessageRepository.AddMessage")
 
 	if _, ok := m.messages[msg.ID]; ok {
@@ -44,7 +44,7 @@ func (m *mockMessageRepository) AddMessage(_ context.Context, msg outbox.Message
 	return nil
 }
 
-func (m *mockMessageRepository) GetUnsentMessage(_ context.Context, instanceID string, maxRetries int) (*outbox.Message, error) {
+func (m *mockMessageRepository) GetUnsentMessage(_ context.Context, instanceID string, maxRetries int) (*xmessage.Message, error) {
 	op := xerrors.Op("outbox.mockMessageRepository.GetUnsentMessage")
 
 	for _, msg := range m.messages {
