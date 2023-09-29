@@ -104,7 +104,9 @@ func (p *PollableDataSource) startPolling(ctx context.Context, publishings chan<
 			continue
 		}
 
-		xlog.Infof("%s: error getting unsent publishings: %+v", op, err)
+		if xerrors.ErrorCode(err) != xerrors.NotFound {
+			xlog.Infof("%s: error getting unsent publishings: %+v", op, err)
+		}
 	}
 }
 
