@@ -1,11 +1,11 @@
-package xoutbox_test
+package outbox_test
 
 import (
 	"context"
 	"testing"
 	"time"
 
-	"github.com/Logistics-Coordinators/x/xoutbox"
+	"github.com/Logistics-Coordinators/x/xevent/outbox"
 	"github.com/stretchr/testify/require"
 )
 
@@ -14,7 +14,7 @@ func TestPostgresPoller(t *testing.T) {
 
 	maxLockAge := time.Second * 2
 
-	poller := xoutbox.NewPostgresPoller(r, xoutbox.NewPollingPolicy(xoutbox.WithLock(time.Millisecond*100, maxLockAge)))
+	poller := outbox.NewPostgresPoller(r, outbox.NewPollingPolicy(outbox.WithLock(time.Millisecond*100, maxLockAge)))
 
 	msgChan, err := poller.GetUnsentMessages(context.TODO())
 	require.NoError(t, err)
@@ -41,7 +41,7 @@ func TestPostgresPoller(t *testing.T) {
 		// Wait for a second to allow poller to lock the message
 		time.Sleep(time.Second)
 
-		poller2 := xoutbox.NewPostgresPoller(r, xoutbox.NewPollingPolicy())
+		poller2 := outbox.NewPostgresPoller(r, outbox.NewPollingPolicy())
 		msgChan2, err := poller2.GetUnsentMessages(context.TODO())
 		require.NoError(t, err)
 

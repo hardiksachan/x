@@ -1,4 +1,4 @@
-package xoutbox
+package outbox
 
 import (
 	"context"
@@ -75,7 +75,7 @@ func NewPollingPolicy(opts ...PollingOption) *PollingPolicy {
 	return &p
 }
 
-// PostgresPoller implements xoutbox.DataStore that polls the database for unsent messages
+// PostgresPoller implements outbox.DataStore that polls the database for unsent messages
 type PostgresPoller struct {
 	r          MessageRepository
 	p          *PollingPolicy
@@ -92,7 +92,7 @@ func NewPostgresPoller(r MessageRepository, p *PollingPolicy) *PostgresPoller {
 }
 
 func (p *PostgresPoller) startPolling(ctx context.Context, messages chan<- *Message) {
-	op := xerrors.Op("xoutbox.PostgresPoller.startPolling")
+	op := xerrors.Op("outbox.PostgresPoller.startPolling")
 
 	for {
 		time.Sleep(p.p.pollingInterval)
@@ -108,7 +108,7 @@ func (p *PostgresPoller) startPolling(ctx context.Context, messages chan<- *Mess
 }
 
 func (p *PostgresPoller) clearLocks(ctx context.Context) {
-	op := xerrors.Op("xoutbox.PostgresPoller.clearLocks")
+	op := xerrors.Op("outbox.PostgresPoller.clearLocks")
 
 	for {
 		time.Sleep(p.p.lockingInterval)
@@ -132,7 +132,7 @@ func (p *PostgresPoller) GetUnsentMessages(ctx context.Context) (<-chan *Message
 
 // SetAsProcessed will set the message as processed
 func (p *PostgresPoller) SetAsProcessed(ctx context.Context, id string) error {
-	op := xerrors.Op("xoutbox.PostgresPoller.SetAsProcessed")
+	op := xerrors.Op("outbox.PostgresPoller.SetAsProcessed")
 
 	err := p.r.SetAsProcessed(ctx, id)
 	if err != nil {
@@ -144,7 +144,7 @@ func (p *PostgresPoller) SetAsProcessed(ctx context.Context, id string) error {
 
 // RetryMessage will set failed message to be retried
 func (p *PostgresPoller) RetryMessage(ctx context.Context, id string) error {
-	op := xerrors.Op("xoutbox.PostgresPoller.RetryMessage")
+	op := xerrors.Op("outbox.PostgresPoller.RetryMessage")
 
 	err := p.r.MarkForRetry(ctx, id, time.Now().Add(p.p.retryInterval))
 	if err != nil {

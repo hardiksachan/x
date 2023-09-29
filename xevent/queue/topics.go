@@ -1,4 +1,4 @@
-package xqueue
+package queue
 
 const (
 	// TopicUserCreated is the topic for user created events

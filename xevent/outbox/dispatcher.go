@@ -1,5 +1,5 @@
-// Package xoutbox provides a transactional outbox
-package xoutbox
+// Package outbox provides a transactional outbox
+package outbox
 
 import (
 	"context"
@@ -49,7 +49,7 @@ func New(ds DataStore, p EventStream, r *xretry.Retrier) Outbox {
 
 // Start will start the outbox
 func (o *Outbox) Start(ctx context.Context) error {
-	op := xerrors.Op("xoutbox.Outbox.Start")
+	op := xerrors.Op("outbox.Outbox.Start")
 
 	messages, err := o.ds.GetUnsentMessages(ctx)
 	if err != nil {
@@ -63,7 +63,7 @@ func (o *Outbox) Start(ctx context.Context) error {
 
 // StartDispatcher will start dispatching all messages in the xdispatcher.DataStore to xdispatcher.EventStream
 func (o *Outbox) StartDispatcher(ctx context.Context, messages <-chan *Message) {
-	op := xerrors.Op("xoutbox.Outbox.StartDispatcher")
+	op := xerrors.Op("outbox.Outbox.StartDispatcher")
 
 	for {
 		select {

@@ -21,7 +21,7 @@ type RabbitClient struct {
 
 // ConnectRabbitMQ will spawn a Connection
 func ConnectRabbitMQ(username, password, host, vhost string) (*amqp.Connection, error) {
-	op := xerrors.Op("xqueue.ConnectRabbitMQ")
+	op := xerrors.Op("queue.ConnectRabbitMQ")
 
 	// Setup the Connection to RabbitMQ host using AMQPs
 	conn, err := amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s/%s", username, password, host, vhost))
@@ -35,7 +35,7 @@ func ConnectRabbitMQ(username, password, host, vhost string) (*amqp.Connection, 
 // NewRabbitMQClient will connect and return a Rabbitclient with an open connection
 // Accepts a amqp Connection to be reused, to avoid spawning one TCP connection per concurrent client
 func NewRabbitMQClient(conn *amqp.Connection) (*RabbitClient, error) {
-	op := xerrors.Op("xqueue.NewRabbitMQClient")
+	op := xerrors.Op("queue.NewRabbitMQClient")
 
 	// Unique, Conncurrent Server Channel to process/send messages
 	// A good rule of thumb is to always REUSE Conn across applications
@@ -62,7 +62,7 @@ func (rc RabbitClient) Close() error {
 
 // CreateQueue will create a new queue based on given cfgs
 func (rc RabbitClient) CreateQueue(queueName string, durable, autodelete bool) (amqp.Queue, error) {
-	op := xerrors.Op("xqueue.RabbitClient.CreateQueue")
+	op := xerrors.Op("queue.RabbitClient.CreateQueue")
 
 	q, err := rc.ch.QueueDeclare(queueName, durable, autodelete, false, false, nil)
 	if err != nil {

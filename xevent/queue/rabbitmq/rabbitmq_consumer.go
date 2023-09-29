@@ -2,7 +2,7 @@ package rabbitmq
 
 import (
 	"github.com/Logistics-Coordinators/x/xerrors"
-	"github.com/Logistics-Coordinators/x/xqueue"
+	"github.com/Logistics-Coordinators/x/xevent/queue"
 )
 
 // RabbitConsumer is a wrapper around RabbitClient that exposes capabilities to listen for events
@@ -20,8 +20,8 @@ func NewRabbitConsumer(client *RabbitClient, queue string) RabbitConsumer {
 }
 
 // Listen will return a channel that can be used to listen for events
-func (rc RabbitConsumer) Listen() (<-chan xqueue.Delivery, error) {
-	op := xerrors.Op("xqueue.RabbitConsumer.Listen")
+func (rc RabbitConsumer) Listen() (<-chan queue.Delivery, error) {
+	op := xerrors.Op("queue.RabbitConsumer.Listen")
 
 	// Create a new Channel that can be used to listen for events
 	// This channel will be used to listen for events
@@ -31,7 +31,7 @@ func (rc RabbitConsumer) Listen() (<-chan xqueue.Delivery, error) {
 	}
 
 	// Create a new channel that will be used to return deliveries
-	deliveries := make(chan xqueue.Delivery)
+	deliveries := make(chan queue.Delivery)
 
 	// Create a new go routine that will listen for events
 	go func() {

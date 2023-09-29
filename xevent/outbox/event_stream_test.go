@@ -1,18 +1,18 @@
-package xoutbox_test
+package outbox_test
 
 import (
 	"strings"
 
 	"github.com/Logistics-Coordinators/x/xerrors"
-	"github.com/Logistics-Coordinators/x/xoutbox"
+	"github.com/Logistics-Coordinators/x/xevent/outbox"
 	"github.com/Logistics-Coordinators/x/xtest"
 )
 
 type testEventStream struct {
-	messages map[string]*xoutbox.Message
+	messages map[string]*outbox.Message
 }
 
-func (es *testEventStream) Send(m *xoutbox.Message) error {
+func (es *testEventStream) Send(m *outbox.Message) error {
 	if strings.HasPrefix(m.ID, "fail:") {
 		return xerrors.E(xerrors.Message("failed to send message"))
 	}
@@ -35,6 +35,6 @@ func (es *testEventStream) isSent(id string) bool {
 
 func newTestEventStream() *testEventStream {
 	return &testEventStream{
-		messages: make(map[string]*xoutbox.Message),
+		messages: make(map[string]*outbox.Message),
 	}
 }

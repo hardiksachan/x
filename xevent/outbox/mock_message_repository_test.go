@@ -1,15 +1,15 @@
-package xoutbox_test
+package outbox_test
 
 import (
 	"context"
 	"time"
 
 	"github.com/Logistics-Coordinators/x/xerrors"
-	"github.com/Logistics-Coordinators/x/xoutbox"
+	"github.com/Logistics-Coordinators/x/xevent/outbox"
 )
 
 type memMessage struct {
-	message     xoutbox.Message
+	message     outbox.Message
 	attempts    int
 	nextRetryAt time.Time
 	lockedBy    string
@@ -26,8 +26,8 @@ func newMockMessageRepository() *mockMessageRepository {
 	}
 }
 
-func (m *mockMessageRepository) AddMessage(_ context.Context, msg xoutbox.Message) error {
-	op := xerrors.Op("xoutbox.mockMessageRepository.AddMessage")
+func (m *mockMessageRepository) AddMessage(_ context.Context, msg outbox.Message) error {
+	op := xerrors.Op("outbox.mockMessageRepository.AddMessage")
 
 	if _, ok := m.messages[msg.ID]; ok {
 		return xerrors.E(op, xerrors.Message("message already exists"))
@@ -44,8 +44,8 @@ func (m *mockMessageRepository) AddMessage(_ context.Context, msg xoutbox.Messag
 	return nil
 }
 
-func (m *mockMessageRepository) GetUnsentMessage(_ context.Context, instanceID string, maxRetries int) (*xoutbox.Message, error) {
-	op := xerrors.Op("xoutbox.mockMessageRepository.GetUnsentMessage")
+func (m *mockMessageRepository) GetUnsentMessage(_ context.Context, instanceID string, maxRetries int) (*outbox.Message, error) {
+	op := xerrors.Op("outbox.mockMessageRepository.GetUnsentMessage")
 
 	for _, msg := range m.messages {
 		if msg.lockedBy == "" && msg.attempts < maxRetries && msg.nextRetryAt.Before(time.Now()) {
@@ -59,7 +59,7 @@ func (m *mockMessageRepository) GetUnsentMessage(_ context.Context, instanceID s
 }
 
 func (m *mockMessageRepository) SetAsProcessed(_ context.Context, id string) error {
-	op := xerrors.Op("xoutbox.mockMessageRepository.SetAsProcessed")
+	op := xerrors.Op("outbox.mockMessageRepository.SetAsProcessed")
 
 	msg, ok := m.messages[id]
 	if !ok {
@@ -74,7 +74,7 @@ func (m *mockMessageRepository) SetAsProcessed(_ context.Context, id string) err
 }
 
 func (m *mockMessageRepository) MarkForRetry(_ context.Context, id string, retryAt time.Time) error {
-	op := xerrors.Op("xoutbox.mockMessageRepository.MarkForRetry")
+	op := xerrors.Op("outbox.mockMessageRepository.MarkForRetry")
 
 	msg, ok := m.messages[id]
 	if !ok {

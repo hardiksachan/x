@@ -1,15 +1,15 @@
-package xoutbox_test
+package outbox_test
 
 import (
 	"context"
 	"sync"
 	"time"
 
-	"github.com/Logistics-Coordinators/x/xoutbox"
+	"github.com/Logistics-Coordinators/x/xevent/outbox"
 )
 
 type messageWithStatus struct {
-	message   *xoutbox.Message
+	message   *outbox.Message
 	processed bool
 }
 
@@ -18,8 +18,8 @@ type testDataStore struct {
 	sync.RWMutex
 }
 
-func (ds *testDataStore) GetUnsentMessages(_ context.Context) (<-chan *xoutbox.Message, error) {
-	msgChan := make(chan *xoutbox.Message)
+func (ds *testDataStore) GetUnsentMessages(_ context.Context) (<-chan *outbox.Message, error) {
+	msgChan := make(chan *outbox.Message)
 
 	go func() {
 		for {
@@ -53,7 +53,7 @@ func (ds *testDataStore) isProcessed(id string) bool {
 	return ds.messages[id].processed
 }
 
-func (ds *testDataStore) AddMessage(m *xoutbox.Message) {
+func (ds *testDataStore) AddMessage(m *outbox.Message) {
 	ds.messages[m.ID] = &messageWithStatus{
 		message:   m,
 		processed: false,

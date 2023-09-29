@@ -1,18 +1,18 @@
-package xoutbox_test
+package outbox_test
 
 import (
 	"context"
 	"testing"
 	"time"
 
-	"github.com/Logistics-Coordinators/x/xoutbox"
+	"github.com/Logistics-Coordinators/x/xevent/outbox"
 	"github.com/Logistics-Coordinators/x/xretry"
 	"github.com/Logistics-Coordinators/x/xtest"
 	"github.com/stretchr/testify/require"
 )
 
-func newMessage() *xoutbox.Message {
-	return &xoutbox.Message{
+func newMessage() *outbox.Message {
+	return &outbox.Message{
 		ID:      xtest.RandomString6(),
 		Topic:   xtest.RandomString6(),
 		Type:    xtest.RandomString6(),
@@ -20,8 +20,8 @@ func newMessage() *xoutbox.Message {
 	}
 }
 
-func newFailableMessage() *xoutbox.Message {
-	return &xoutbox.Message{
+func newFailableMessage() *outbox.Message {
+	return &outbox.Message{
 		ID:      "fail:" + xtest.RandomString6(),
 		Topic:   xtest.RandomString6(),
 		Type:    xtest.RandomString6(),
@@ -29,8 +29,8 @@ func newFailableMessage() *xoutbox.Message {
 	}
 }
 
-func newRetriableMessage() *xoutbox.Message {
-	return &xoutbox.Message{
+func newRetriableMessage() *outbox.Message {
+	return &outbox.Message{
 		ID:      "retry:" + xtest.RandomString6(),
 		Topic:   xtest.RandomString6(),
 		Type:    xtest.RandomString6(),
@@ -43,7 +43,7 @@ func TestStart(t *testing.T) {
 	es := newTestEventStream()
 	r := xretry.NewRetrier(xretry.NewRetryPolicy(xretry.WithNoRetries()))
 
-	o := xoutbox.New(ds, es, r)
+	o := outbox.New(ds, es, r)
 
 	failedMessages := o.FailedMessages()
 
@@ -87,7 +87,7 @@ func TestStartWithRetry(t *testing.T) {
 	es := newTestEventStream()
 	r := xretry.NewRetrier(xretry.NewRetryPolicy(xretry.WithImmediateRetries(10)))
 
-	o := xoutbox.New(ds, es, r)
+	o := outbox.New(ds, es, r)
 
 	err := o.Start(context.Background())
 	require.NoError(t, err)
