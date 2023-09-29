@@ -4,8 +4,8 @@ package xoutbox
 import (
 	"context"
 
-	"github.com/Logistics-Coordinators/dqf-v2-backend/internal/xretry"
 	"github.com/Logistics-Coordinators/x/xerrors"
+	"github.com/Logistics-Coordinators/x/xretry"
 )
 
 const (

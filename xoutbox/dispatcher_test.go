@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/Logistics-Coordinators/dqf-v2-backend/internal/xoutbox"
-	"github.com/Logistics-Coordinators/dqf-v2-backend/internal/xretry"
+	"github.com/Logistics-Coordinators/x/xretry"
 	"github.com/Logistics-Coordinators/x/xtest"
 	"github.com/stretchr/testify/require"
 )
