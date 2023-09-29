@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/Logistics-Coordinators/dqf-v2-backend/internal/xoutbox"
 	"github.com/Logistics-Coordinators/x/xerrors"
+	"github.com/Logistics-Coordinators/x/xoutbox"
 )
 
 type memMessage struct {

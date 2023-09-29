@@ -3,8 +3,8 @@ package xoutbox_test
 import (
 	"strings"
 
-	"github.com/Logistics-Coordinators/dqf-v2-backend/internal/xoutbox"
 	"github.com/Logistics-Coordinators/x/xerrors"
+	"github.com/Logistics-Coordinators/x/xoutbox"
 	"github.com/Logistics-Coordinators/x/xtest"
 )
 

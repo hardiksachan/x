@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Logistics-Coordinators/dqf-v2-backend/internal/xoutbox"
+	"github.com/Logistics-Coordinators/x/xoutbox"
 )
 
 type messageWithStatus struct {
