@@ -43,7 +43,7 @@ func newRetriablePublishing() *xmessage.Publishing {
 
 func TestStart(t *testing.T) {
 	ds := newTestDataStore()
-	es := newTestEventStream()
+	es := newMockPublishingStream()
 	r := xretry.NewRetrier(xretry.NewRetryPolicy(xretry.WithNoRetries()))
 
 	o := outbox.New(ds, es, r)
@@ -87,7 +87,7 @@ func TestStart(t *testing.T) {
 
 func TestStartWithRetry(t *testing.T) {
 	ds := newTestDataStore()
-	es := newTestEventStream()
+	es := newMockPublishingStream()
 	r := xretry.NewRetrier(xretry.NewRetryPolicy(xretry.WithImmediateRetries(10)))
 
 	o := outbox.New(ds, es, r)

@@ -1,6 +1,7 @@
 package outbox_test
 
 import (
+	"context"
 	"strings"
 
 	"github.com/Logistics-Coordinators/x/xerrors"
@@ -8,11 +9,11 @@ import (
 	"github.com/Logistics-Coordinators/x/xtest"
 )
 
-type testEventStream struct {
+type mockPublishingStream struct {
 	publishings map[string]*xmessage.Publishing
 }
 
-func (es *testEventStream) Send(p *xmessage.Publishing) error {
+func (ps *mockPublishingStream) Send(_ context.Context, p *xmessage.Publishing) error {
 	if strings.HasPrefix(string(p.Topic), "fail:") {
 		return xerrors.E(xerrors.Message("failed to send message"))
 	}
@@ -24,17 +25,17 @@ func (es *testEventStream) Send(p *xmessage.Publishing) error {
 		}
 	}
 
-	es.publishings[p.Message.ID] = p
+	ps.publishings[p.Message.ID] = p
 	return nil
 }
 
-func (es *testEventStream) isSent(id string) bool {
-	_, ok := es.publishings[id]
+func (ps *mockPublishingStream) isSent(id string) bool {
+	_, ok := ps.publishings[id]
 	return ok
 }
 
-func newTestEventStream() *testEventStream {
-	return &testEventStream{
+func newMockPublishingStream() *mockPublishingStream {
+	return &mockPublishingStream{
 		publishings: make(map[string]*xmessage.Publishing),
 	}
 }

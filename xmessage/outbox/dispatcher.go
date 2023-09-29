@@ -19,9 +19,9 @@ type DataStore interface {
 	SetAsProcessed(ctx context.Context, id string) error
 }
 
-// EventStream is used to send publishing to queue
-type EventStream interface {
-	Send(*xmessage.Publishing) error
+// PublishingStream is used to send publishing to queue
+type PublishingStream interface {
+	Send(context.Context, *xmessage.Publishing) error
 }
 
 // FailedPublishing is a publishing that failed to be dispatched
@@ -33,16 +33,16 @@ type FailedPublishing struct {
 // Outbox is a transactional outbox
 type Outbox struct {
 	ds DataStore
-	es EventStream
+	ps PublishingStream
 	r  *xretry.Retrier
 	fm chan *FailedPublishing
 }
 
 // New creates a new Outbox
-func New(ds DataStore, p EventStream, r *xretry.Retrier) Outbox {
+func New(ds DataStore, p PublishingStream, r *xretry.Retrier) Outbox {
 	return Outbox{
 		ds: ds,
-		es: p,
+		ps: p,
 		r:  r,
 		fm: make(chan *FailedPublishing, failedMessagesChanSize),
 	}
@@ -70,7 +70,7 @@ func (o *Outbox) StartDispatcher(ctx context.Context, publishings <-chan *xmessa
 		select {
 		case p := <-publishings:
 			err := o.r.Retry((func() error {
-				return o.es.Send(p)
+				return o.ps.Send(ctx, p)
 			}))
 			if err != nil {
 				fm := &FailedPublishing{
