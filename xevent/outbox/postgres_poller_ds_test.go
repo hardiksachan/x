@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestPostgresPoller(t *testing.T) {
+func TestGetUnsentMessage(t *testing.T) {
 	r := newMockMessageRepository()
 
 	maxLockAge := time.Second * 2
@@ -52,6 +52,14 @@ func TestPostgresPoller(t *testing.T) {
 			// No message received, which is expected
 		}
 	})
+}
+
+func TestSetAsProcessed(t *testing.T) {
+	r := newMockMessageRepository()
+
+	maxLockAge := time.Second * 2
+
+	poller := outbox.NewPostgresPoller(r, outbox.NewPollingPolicy(outbox.WithLock(time.Millisecond*100, maxLockAge)))
 
 	t.Run("SetAsProcessed must set message as processed", func(t *testing.T) {
 		m := newMessage()
@@ -65,11 +73,24 @@ func TestPostgresPoller(t *testing.T) {
 			return r.isProcessed(m.ID)
 		}, time.Second, time.Millisecond*100)
 	})
+}
+
+func TestClearLocks(t *testing.T) {
+	r := newMockMessageRepository()
+
+	maxLockAge := time.Second * 2
+
+	poller := outbox.NewPostgresPoller(r, outbox.NewPollingPolicy(outbox.WithLock(time.Millisecond*100, maxLockAge)))
+
+	msgChan, err := poller.GetUnsentMessages(context.TODO())
+	require.NoError(t, err)
 
 	t.Run("Locks must be cleared after timeout", func(t *testing.T) {
 		m := newMessage()
 		err := r.AddMessage(context.TODO(), *m)
 		require.NoError(t, err)
+
+		<-msgChan
 
 		// Wait for a second to allow poller to lock the message
 		time.Sleep(time.Second)
