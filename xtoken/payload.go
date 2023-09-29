@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
+// Payload is the payload of a token.
 type Payload struct {
 	TokenID   string    `json:"token_id"`
 	UserID    string    `json:"user_id"`
@@ -15,6 +16,7 @@ type Payload struct {
 	ExpiredAt time.Time `json:"expired_at"`
 }
 
+// NewPayload returns a new Payload.
 func NewPayload(userID, email string, duration time.Duration) (*Payload, error) {
 	op := xerrors.Op("xtoken.NewPayload")
 
@@ -33,6 +35,7 @@ func NewPayload(userID, email string, duration time.Duration) (*Payload, error) 
 	return payload, nil
 }
 
+// Valid returns an error if a payload is invalid.
 func (payload *Payload) Valid() error {
 	op := xerrors.Op("xtoken.Payload.Valid")
 	if time.Now().After(payload.ExpiredAt) {

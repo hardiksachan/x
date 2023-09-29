@@ -1,3 +1,4 @@
+// Package xhash provides hashing functions.
 package xhash
 
 import (
@@ -5,6 +6,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// HashPassword returns a hashed password.
 func HashPassword(password string) (string, error) {
 	op := xerrors.Op("xhash.HashPassword")
 
@@ -15,6 +17,7 @@ func HashPassword(password string) (string, error) {
 	return string(hashedPassword), nil
 }
 
+// ComparePassword compares a hashed password with a password.
 func ComparePassword(hashedPassword, password string) error {
 	op := xerrors.Op("xhash.ComparePassword")
 

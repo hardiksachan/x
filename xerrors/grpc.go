@@ -6,6 +6,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// GrpcCode returns the gRPC code for the given error.
 func (c Code) grpcCode() codes.Code {
 	switch c {
 	case Other:
@@ -18,10 +19,13 @@ func (c Code) grpcCode() codes.Code {
 		return codes.NotFound
 	case Exists:
 		return codes.AlreadyExists
+	case Expired:
+		return codes.DeadlineExceeded
 	}
 	return codes.Unknown
 }
 
+// GrpcError returns a gRPC error for the given error.
 func GrpcError(err error) error {
 	code := ErrorCode(err)
 

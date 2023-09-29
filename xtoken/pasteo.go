@@ -10,14 +10,17 @@ import (
 )
 
 const (
+	// ErrExpiredToken is returned when a token has expired.
 	ErrExpiredToken = xerrors.Message("Your session has expired")
 )
 
+// PasetoMaker is a Paseto token maker.
 type PasetoMaker struct {
 	paseto       *paseto.V2
 	symmetricKey []byte
 }
 
+// NewPasetoMaker returns a new PasetoMaker.
 func NewPasetoMaker(symmetricKey string) (Maker, error) {
 	op := xerrors.Op("xtoken.NewPasetoMaker")
 
@@ -37,6 +40,7 @@ func NewPasetoMaker(symmetricKey string) (Maker, error) {
 	return maker, nil
 }
 
+// CreateToken creates a new token.
 func (maker *PasetoMaker) CreateToken(userID, email string, duration time.Duration) (string, *Payload, error) {
 	op := xerrors.Op("xtoken.PasetoMaker.CreateToken")
 
@@ -52,9 +56,11 @@ func (maker *PasetoMaker) CreateToken(userID, email string, duration time.Durati
 	return token, payload, nil
 }
 
+// VerifyToken verifies a token.
 func (maker *PasetoMaker) VerifyToken(token string) (*Payload, error) {
 	op := xerrors.Op("xtoken.PasetoMaker.VerifyToken")
 
+	//nolint:exhaustruct
 	payload := &Payload{}
 
 	err := maker.paseto.Decrypt(token, maker.symmetricKey, payload, nil)

@@ -1,15 +1,16 @@
-package xtoken
+package xtoken_test
 
 import (
 	"testing"
 	"time"
 
 	"github.com/Logistics-Coordinators/x/xtest"
+	"github.com/Logistics-Coordinators/x/xtoken"
 	"github.com/stretchr/testify/require"
 )
 
 func TestPasetoMaker(t *testing.T) {
-	maker, err := NewPasetoMaker(xtest.RandomString(32))
+	maker, err := xtoken.NewPasetoMaker(xtest.RandomString(32))
 	require.NoError(t, err)
 
 	email := xtest.RandomEmailString()
@@ -37,7 +38,7 @@ func TestPasetoMaker(t *testing.T) {
 }
 
 func TestExpiredPasetoToken(t *testing.T) {
-	maker, err := NewPasetoMaker(xtest.RandomString(32))
+	maker, err := xtoken.NewPasetoMaker(xtest.RandomString(32))
 	require.NoError(t, err)
 
 	token, payload, err := maker.CreateToken(xtest.RandomString(32), xtest.RandomEmailString(), -time.Minute)

@@ -1,6 +1,7 @@
+// Package xerrors provides a simple error type that supports wrapping and
+// unwrapping of errors, as well as attaching arbitrary metadata.
 // see also: https://middlemost.com/failure-is-your-domain/
 // see also: https://commandcenter.blogspot.com/2017/12/error-handling-in-upspin.html
-
 package xerrors
 
 import (
@@ -12,11 +13,17 @@ import (
 )
 
 type (
-	Op      string
+	// Op represents a logical operation.
+	Op string
+
+	// Message represents a human-readable message.
 	Message string
-	Code    uint8
+
+	// Code represents a machine-readable error code.
+	Code uint8
 )
 
+// Error codes.
 const (
 	Other Code = iota
 	Internal
@@ -26,6 +33,7 @@ const (
 	Expired
 )
 
+// String returns the string representation of the error code.
 func (c *Code) String() string {
 	switch *c {
 	case Other:
@@ -44,6 +52,7 @@ func (c *Code) String() string {
 	return "unknown error code"
 }
 
+// Error represents a custom error type that supports wrapping and unwrapping.
 type Error struct {
 	// Machine-readable error code.
 	Code Code
@@ -105,10 +114,23 @@ func ErrorMessage(err error) Message {
 	return "An internal error has occurred. Please contact technical support."
 }
 
+// E creates an error from a list of arguments. The arguments are processed in
+// order until the first error is encountered. If no errors are encountered,
+// E returns nil.
+//
+// The following types are accepted as arguments:
+// xerrors.Op
+// xerrors.Message
+// xerrors.Code
+// xerrors.Error
+// error
+//
+//nolint:cyclop
 func E(args ...interface{}) error {
 	if len(args) == 0 {
 		panic("call to errors.E with no arguments")
 	}
+	//nolint:exhaustruct
 	e := &Error{}
 	for _, arg := range args {
 		switch arg := arg.(type) {
