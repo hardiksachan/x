@@ -1,20 +1,23 @@
 // Package xevent provides the event system
 package xevent
 
-import "context"
+import (
+	"context"
+)
 
 // Topic is a topic of events.
 type Topic string
 
-// Event is a notification of something that happened in the system.
-type Event struct {
+// Message is a notification of something that happened in the system.
+type Message struct {
+	ID   string
 	Type string
 	Data []byte
 }
 
 // Delivery is a delivery of an event.
 type Delivery interface {
-	Event() *Event
+	Message() *Message
 	Ack() error
 	Nack() error
 }
@@ -22,7 +25,7 @@ type Delivery interface {
 // Publisher is a producer of events.
 type Publisher interface {
 	// Send sends an event to the server.
-	Send(ctx context.Context, topic Topic, event *Event) error
+	Send(ctx context.Context, topic Topic, event *Message) error
 }
 
 // Consumer is a consumer of events.

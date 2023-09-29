@@ -6,7 +6,7 @@ import "context"
 type NoopBackbone struct{}
 
 // Send implements xevent.Backbone.
-func (n *NoopBackbone) Send(context.Context, Topic, *Event) error {
+func (n *NoopBackbone) Send(context.Context, Topic, *Message) error {
 	return nil
 }
 

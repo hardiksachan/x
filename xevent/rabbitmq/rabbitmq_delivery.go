@@ -10,9 +10,10 @@ type RabbitDelivery struct {
 	delivery *amqp.Delivery
 }
 
-// Event will return the event
-func (rd *RabbitDelivery) Event() *xevent.Event {
-	return &xevent.Event{
+// Message will return the event
+func (rd *RabbitDelivery) Message() *xevent.Message {
+	return &xevent.Message{
+		ID:   rd.delivery.MessageId,
 		Type: rd.delivery.Type,
 		Data: rd.delivery.Body,
 	}

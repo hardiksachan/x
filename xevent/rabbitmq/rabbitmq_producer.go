@@ -23,14 +23,15 @@ func NewRabbitProducer(client *RabbitClient, exchange xevent.Exchange) RabbitPro
 }
 
 // Send will send a payload to the exchange
-func (rp *RabbitProducer) Send(ctx context.Context, topic xevent.Topic, event *xevent.Event) error {
+func (rp *RabbitProducer) Send(ctx context.Context, topic xevent.Topic, message *xevent.Message) error {
 	op := xerrors.Op("xevent.RabbitProducer.Send")
 
 	// TODO: make it traceable
 	//nolint:exhaustruct
 	publishing := amqp.Publishing{
-		Type: event.Type,
-		Body: event.Data,
+		Type:      message.Type,
+		Body:      message.Data,
+		MessageId: message.ID,
 	}
 
 	err := rp.client.Send(ctx, string(rp.exchange), string(topic), publishing)
