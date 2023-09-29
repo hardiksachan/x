@@ -57,14 +57,13 @@ func (o *Outbox) Start(ctx context.Context) error {
 		return xerrors.E(op, err)
 	}
 
-	go o.StartDispatcher(ctx, messages)
+	go o.startDispatcher(ctx, messages)
 
 	return nil
 }
 
-// StartDispatcher will start dispatching all publishings in the xdispatcher.DataStore to xdispatcher.EventStream
-func (o *Outbox) StartDispatcher(ctx context.Context, publishings <-chan *xmessage.Publishing) {
-	op := xerrors.Op("outbox.Outbox.StartDispatcher")
+func (o *Outbox) startDispatcher(ctx context.Context, publishings <-chan *xmessage.Publishing) {
+	op := xerrors.Op("outbox.Outbox.startDispatcher")
 
 	for {
 		select {
