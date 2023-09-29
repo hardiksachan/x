@@ -1,12 +1,16 @@
 package queue
 
-import "context"
+import (
+	"context"
+
+	"github.com/Logistics-Coordinators/x/xmessage"
+)
 
 // NoopBackbone is a no-op implementation of Backbone.
 type NoopBackbone struct{}
 
 // Send implements queue.Backbone.
-func (n *NoopBackbone) Send(context.Context, Topic, *Message) error {
+func (n *NoopBackbone) Send(context.Context, xmessage.Topic, *Message) error {
 	return nil
 }
 

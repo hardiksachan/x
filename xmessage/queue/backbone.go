@@ -3,10 +3,9 @@ package queue
 
 import (
 	"context"
-)
 
-// Topic is a topic of events.
-type Topic string
+	"github.com/Logistics-Coordinators/x/xmessage"
+)
 
 // Message is a notification of something that happened in the system.
 type Message struct {
@@ -25,7 +24,7 @@ type Delivery interface {
 // Publisher is a producer of events.
 type Publisher interface {
 	// Send sends an event to the server.
-	Send(ctx context.Context, topic Topic, event *Message) error
+	Send(ctx context.Context, topic xmessage.Topic, event *Message) error
 }
 
 // Consumer is a consumer of events.

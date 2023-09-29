@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/Logistics-Coordinators/x/xerrors"
+	"github.com/Logistics-Coordinators/x/xmessage"
 	"github.com/Logistics-Coordinators/x/xmessage/queue"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
@@ -23,7 +24,7 @@ func NewRabbitProducer(client *RabbitClient, exchange queue.Exchange) RabbitProd
 }
 
 // Send will send a payload to the exchange
-func (rp *RabbitProducer) Send(ctx context.Context, topic queue.Topic, message *queue.Message) error {
+func (rp *RabbitProducer) Send(ctx context.Context, topic xmessage.Topic, message *queue.Message) error {
 	op := xerrors.Op("queue.RabbitProducer.Send")
 
 	// TODO: make it traceable
