@@ -1,16 +1,16 @@
-package xevent
+package xqueue
 
 import "context"
 
 // NoopBackbone is a no-op implementation of Backbone.
 type NoopBackbone struct{}
 
-// Send implements xevent.Backbone.
+// Send implements xqueue.Backbone.
 func (n *NoopBackbone) Send(context.Context, Topic, *Message) error {
 	return nil
 }
 
-// Listen implements xevent.Backbone.
+// Listen implements xqueue.Backbone.
 func (n *NoopBackbone) Listen() (<-chan *Delivery, error) {
 	return nil, nil
 }

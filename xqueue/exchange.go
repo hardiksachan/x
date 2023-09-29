@@ -1,4 +1,4 @@
-package xevent
+package xqueue
 
 // Exchange is the type for exchanges
 type Exchange string

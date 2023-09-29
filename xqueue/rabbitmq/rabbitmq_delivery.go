@@ -1,7 +1,7 @@
 package rabbitmq
 
 import (
-	"github.com/Logistics-Coordinators/x/xevent"
+	"github.com/Logistics-Coordinators/x/xqueue"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
@@ -11,8 +11,8 @@ type RabbitDelivery struct {
 }
 
 // Message will return the event
-func (rd *RabbitDelivery) Message() *xevent.Message {
-	return &xevent.Message{
+func (rd *RabbitDelivery) Message() *xqueue.Message {
+	return &xqueue.Message{
 		ID:   rd.delivery.MessageId,
 		Type: rd.delivery.Type,
 		Data: rd.delivery.Body,

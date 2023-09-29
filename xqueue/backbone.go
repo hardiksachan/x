@@ -1,5 +1,5 @@
-// Package xevent provides the event system
-package xevent
+// Package xqueue provides the event system
+package xqueue
 
 import (
 	"context"

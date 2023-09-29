@@ -4,18 +4,18 @@ import (
 	"context"
 
 	"github.com/Logistics-Coordinators/x/xerrors"
-	"github.com/Logistics-Coordinators/x/xevent"
+	"github.com/Logistics-Coordinators/x/xqueue"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 // RabbitProducer is a wrapper around RabbitClient that exposes capabilities to send events
 type RabbitProducer struct {
 	client   *RabbitClient
-	exchange xevent.Exchange
+	exchange xqueue.Exchange
 }
 
 // NewRabbitProducer will create a new RabbitProducer
-func NewRabbitProducer(client *RabbitClient, exchange xevent.Exchange) RabbitProducer {
+func NewRabbitProducer(client *RabbitClient, exchange xqueue.Exchange) RabbitProducer {
 	return RabbitProducer{
 		client:   client,
 		exchange: exchange,
@@ -23,8 +23,8 @@ func NewRabbitProducer(client *RabbitClient, exchange xevent.Exchange) RabbitPro
 }
 
 // Send will send a payload to the exchange
-func (rp *RabbitProducer) Send(ctx context.Context, topic xevent.Topic, message *xevent.Message) error {
-	op := xerrors.Op("xevent.RabbitProducer.Send")
+func (rp *RabbitProducer) Send(ctx context.Context, topic xqueue.Topic, message *xqueue.Message) error {
+	op := xerrors.Op("xqueue.RabbitProducer.Send")
 
 	// TODO: make it traceable
 	//nolint:exhaustruct
