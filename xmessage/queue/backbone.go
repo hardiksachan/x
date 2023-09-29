@@ -7,16 +7,9 @@ import (
 	"github.com/Logistics-Coordinators/x/xmessage"
 )
 
-// Message is a notification of something that happened in the system.
-type Message struct {
-	ID   string
-	Type string
-	Data []byte
-}
-
 // Delivery is a delivery of an event.
 type Delivery interface {
-	Message() *Message
+	Message() *xmessage.Message
 	Ack() error
 	Nack() error
 }
@@ -24,7 +17,7 @@ type Delivery interface {
 // Publisher is a producer of events.
 type Publisher interface {
 	// Send sends an event to the server.
-	Send(ctx context.Context, topic xmessage.Topic, event *Message) error
+	Send(ctx context.Context, publishing *xmessage.Publishing) error
 }
 
 // Consumer is a consumer of events.

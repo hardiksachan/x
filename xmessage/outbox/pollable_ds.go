@@ -18,9 +18,9 @@ const (
 	defaultRetryInterval   = 30 * time.Second
 )
 
-// MessageRepository is the interface that will need to be implemented by the consumer
-type MessageRepository interface {
-	GetUnsentMessage(ctx context.Context, instanceID string, maxRetries int) (*xmessage.Message, error)
+// PollableRepository is the interface that will need to be implemented by the consumer
+type PollableRepository interface {
+	GetUnsentPublishing(ctx context.Context, instanceID string, maxRetries int) (*xmessage.Publishing, error)
 	SetAsProcessed(ctx context.Context, id string) error
 	MarkForRetry(ctx context.Context, id string, retryAt time.Time) error
 	ClearLocks(ctx context.Context, instanceID string, obtainedBefore time.Time) error
@@ -76,40 +76,40 @@ func NewPollingPolicy(opts ...PollingOption) *PollingPolicy {
 	return &p
 }
 
-// PostgresPoller implements outbox.DataStore that polls the database for unsent messages
-type PostgresPoller struct {
-	r          MessageRepository
+// PollableDataSource implements outbox.DataStore that polls the database for unsent messages
+type PollableDataSource struct {
+	r          PollableRepository
 	p          *PollingPolicy
 	instanceID string
 }
 
-// NewPostgresPoller creates a new PostgresPoller
-func NewPostgresPoller(r MessageRepository, p *PollingPolicy) *PostgresPoller {
-	return &PostgresPoller{
+// NewPollableDataSource creates a new PollableDataSource
+func NewPollableDataSource(r PollableRepository, p *PollingPolicy) *PollableDataSource {
+	return &PollableDataSource{
 		instanceID: uuid.NewString(),
 		r:          r,
 		p:          p,
 	}
 }
 
-func (p *PostgresPoller) startPolling(ctx context.Context, messages chan<- *xmessage.Message) {
-	op := xerrors.Op("outbox.PostgresPoller.startPolling")
+func (p *PollableDataSource) startPolling(ctx context.Context, publishings chan<- *xmessage.Publishing) {
+	op := xerrors.Op("outbox.PollableDataSource.startPolling")
 
 	for {
 		time.Sleep(p.p.pollingInterval)
 
-		msg, err := p.r.GetUnsentMessage(ctx, p.instanceID, p.p.maxRetries)
+		publishing, err := p.r.GetUnsentPublishing(ctx, p.instanceID, p.p.maxRetries)
 		if err == nil {
-			messages <- msg
+			publishings <- publishing
 			continue
 		}
 
-		xlog.Infof("%s: error getting unsent messages: %+v", op, err)
+		xlog.Infof("%s: error getting unsent publishings: %+v", op, err)
 	}
 }
 
-func (p *PostgresPoller) clearLocks(ctx context.Context) {
-	op := xerrors.Op("outbox.PostgresPoller.clearLocks")
+func (p *PollableDataSource) clearLocks(ctx context.Context) {
+	op := xerrors.Op("outbox.PollableDataSource.clearLocks")
 
 	for {
 		time.Sleep(p.p.lockingInterval)
@@ -121,9 +121,9 @@ func (p *PostgresPoller) clearLocks(ctx context.Context) {
 	}
 }
 
-// GetUnsentMessages will return all unsent messages
-func (p *PostgresPoller) GetUnsentMessages(ctx context.Context) (<-chan *xmessage.Message, error) {
-	messages := make(chan *xmessage.Message)
+// GetUnsentPublishings will return all unsent messages
+func (p *PollableDataSource) GetUnsentPublishings(ctx context.Context) (<-chan *xmessage.Publishing, error) {
+	messages := make(chan *xmessage.Publishing)
 
 	go p.startPolling(ctx, messages)
 	go p.clearLocks(ctx)
@@ -132,8 +132,8 @@ func (p *PostgresPoller) GetUnsentMessages(ctx context.Context) (<-chan *xmessag
 }
 
 // SetAsProcessed will set the message as processed
-func (p *PostgresPoller) SetAsProcessed(ctx context.Context, id string) error {
-	op := xerrors.Op("outbox.PostgresPoller.SetAsProcessed")
+func (p *PollableDataSource) SetAsProcessed(ctx context.Context, id string) error {
+	op := xerrors.Op("outbox.PollableDataSource.SetAsProcessed")
 
 	err := p.r.SetAsProcessed(ctx, id)
 	if err != nil {
@@ -144,8 +144,8 @@ func (p *PostgresPoller) SetAsProcessed(ctx context.Context, id string) error {
 }
 
 // RetryMessage will set failed message to be retried
-func (p *PostgresPoller) RetryMessage(ctx context.Context, id string) error {
-	op := xerrors.Op("outbox.PostgresPoller.RetryMessage")
+func (p *PollableDataSource) RetryMessage(ctx context.Context, id string) error {
+	op := xerrors.Op("outbox.PollableDataSource.RetryMessage")
 
 	err := p.r.MarkForRetry(ctx, id, time.Now().Add(p.p.retryInterval))
 	if err != nil {

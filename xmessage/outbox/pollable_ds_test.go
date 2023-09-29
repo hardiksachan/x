@@ -14,35 +14,35 @@ func TestGetUnsentMessage(t *testing.T) {
 
 	maxLockAge := time.Second * 2
 
-	poller := outbox.NewPostgresPoller(r, outbox.NewPollingPolicy(outbox.WithLock(time.Millisecond*100, maxLockAge)))
+	poller := outbox.NewPollableDataSource(r, outbox.NewPollingPolicy(outbox.WithLock(time.Millisecond*100, maxLockAge)))
 
-	msgChan, err := poller.GetUnsentMessages(context.TODO())
+	msgChan, err := poller.GetUnsentPublishings(context.TODO())
 	require.NoError(t, err)
 
 	t.Run("GetUnsentMessage must return message that are added to repository", func(t *testing.T) {
-		m := newMessage()
+		m := newPublishing()
 		err = r.AddMessage(context.TODO(), *m)
 		require.NoError(t, err)
 
 		msg := <-msgChan
 
-		require.Equal(t, m.ID, msg.ID)
+		require.Equal(t, m.Message.ID, msg.Message.ID)
 	})
 
 	t.Run("GetUnsentMessage must not return message that are locked", func(t *testing.T) {
-		m := newMessage()
+		m := newPublishing()
 		err = r.AddMessage(context.TODO(), *m)
 		require.NoError(t, err)
 
 		msg := <-msgChan
 
-		require.Equal(t, m.ID, msg.ID)
+		require.Equal(t, m.Message.ID, msg.Message.ID)
 
 		// Wait for a second to allow poller to lock the message
 		time.Sleep(time.Second)
 
-		poller2 := outbox.NewPostgresPoller(r, outbox.NewPollingPolicy())
-		msgChan2, err := poller2.GetUnsentMessages(context.TODO())
+		poller2 := outbox.NewPollableDataSource(r, outbox.NewPollingPolicy())
+		msgChan2, err := poller2.GetUnsentPublishings(context.TODO())
 		require.NoError(t, err)
 
 		select {
@@ -59,18 +59,18 @@ func TestSetAsProcessed(t *testing.T) {
 
 	maxLockAge := time.Second * 2
 
-	poller := outbox.NewPostgresPoller(r, outbox.NewPollingPolicy(outbox.WithLock(time.Millisecond*100, maxLockAge)))
+	poller := outbox.NewPollableDataSource(r, outbox.NewPollingPolicy(outbox.WithLock(time.Millisecond*100, maxLockAge)))
 
 	t.Run("SetAsProcessed must set message as processed", func(t *testing.T) {
-		m := newMessage()
+		m := newPublishing()
 		err := r.AddMessage(context.TODO(), *m)
 		require.NoError(t, err)
 
-		err = poller.SetAsProcessed(context.Background(), m.ID)
+		err = poller.SetAsProcessed(context.Background(), m.Message.ID)
 		require.NoError(t, err)
 
 		require.Eventually(t, func() bool {
-			return r.isProcessed(m.ID)
+			return r.isProcessed(m.Message.ID)
 		}, time.Second, time.Millisecond*100)
 	})
 }
@@ -80,13 +80,13 @@ func TestClearLocks(t *testing.T) {
 
 	maxLockAge := time.Second * 2
 
-	poller := outbox.NewPostgresPoller(r, outbox.NewPollingPolicy(outbox.WithLock(time.Millisecond*100, maxLockAge)))
+	poller := outbox.NewPollableDataSource(r, outbox.NewPollingPolicy(outbox.WithLock(time.Millisecond*100, maxLockAge)))
 
-	msgChan, err := poller.GetUnsentMessages(context.TODO())
+	msgChan, err := poller.GetUnsentPublishings(context.TODO())
 	require.NoError(t, err)
 
 	t.Run("Locks must be cleared after timeout", func(t *testing.T) {
-		m := newMessage()
+		m := newPublishing()
 		err := r.AddMessage(context.TODO(), *m)
 		require.NoError(t, err)
 
@@ -96,7 +96,7 @@ func TestClearLocks(t *testing.T) {
 		time.Sleep(time.Second)
 
 		require.Eventually(t, func() bool {
-			return !r.isLocked(m.ID)
+			return !r.isLocked(m.Message.ID)
 		}, maxLockAge+time.Second, time.Millisecond*100)
 	})
 }

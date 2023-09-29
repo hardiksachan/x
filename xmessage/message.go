@@ -10,10 +10,16 @@ type Topic string
 type Message struct {
 	// ID is the unique identifier of the message
 	ID string
-	// Topic is the name of the topic to which the message is published
-	Topic string
 	// Type is the type of the message
 	Type string
 	// Payload is the message payload
 	Payload []byte
+}
+
+// Publishing is a publishing of an event.
+type Publishing struct {
+	// Topic is the topic of the event.
+	Topic Topic
+	// Message is the message of the event.
+	Message *Message
 }

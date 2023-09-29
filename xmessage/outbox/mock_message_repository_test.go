@@ -9,7 +9,7 @@ import (
 )
 
 type memMessage struct {
-	message     xmessage.Message
+	message     xmessage.Publishing
 	attempts    int
 	nextRetryAt time.Time
 	lockedBy    string
@@ -26,14 +26,14 @@ func newMockMessageRepository() *mockMessageRepository {
 	}
 }
 
-func (m *mockMessageRepository) AddMessage(_ context.Context, msg xmessage.Message) error {
+func (m *mockMessageRepository) AddMessage(_ context.Context, msg xmessage.Publishing) error {
 	op := xerrors.Op("outbox.mockMessageRepository.AddMessage")
 
-	if _, ok := m.messages[msg.ID]; ok {
+	if _, ok := m.messages[msg.Message.ID]; ok {
 		return xerrors.E(op, xerrors.Message("message already exists"))
 	}
 
-	m.messages[msg.ID] = &memMessage{
+	m.messages[msg.Message.ID] = &memMessage{
 		message:     msg,
 		attempts:    0,
 		nextRetryAt: time.Now(),
@@ -44,7 +44,7 @@ func (m *mockMessageRepository) AddMessage(_ context.Context, msg xmessage.Messa
 	return nil
 }
 
-func (m *mockMessageRepository) GetUnsentMessage(_ context.Context, instanceID string, maxRetries int) (*xmessage.Message, error) {
+func (m *mockMessageRepository) GetUnsentPublishing(_ context.Context, instanceID string, maxRetries int) (*xmessage.Publishing, error) {
 	op := xerrors.Op("outbox.mockMessageRepository.GetUnsentMessage")
 
 	for _, msg := range m.messages {

@@ -24,18 +24,18 @@ func NewRabbitProducer(client *RabbitClient, exchange queue.Exchange) RabbitProd
 }
 
 // Send will send a payload to the exchange
-func (rp *RabbitProducer) Send(ctx context.Context, topic xmessage.Topic, message *queue.Message) error {
+func (rp *RabbitProducer) Send(ctx context.Context, publishing *xmessage.Publishing) error {
 	op := xerrors.Op("queue.RabbitProducer.Send")
 
 	// TODO: make it traceable
 	//nolint:exhaustruct
-	publishing := amqp.Publishing{
-		Type:      message.Type,
-		Body:      message.Data,
-		MessageId: message.ID,
+	rbPublishing := amqp.Publishing{
+		Type:      publishing.Message.Type,
+		Body:      publishing.Message.Payload,
+		MessageId: publishing.Message.ID,
 	}
 
-	err := rp.client.Send(ctx, string(rp.exchange), string(topic), publishing)
+	err := rp.client.Send(ctx, string(rp.exchange), string(publishing.Topic), rbPublishing)
 	if err != nil {
 		return xerrors.E(op, err)
 	}

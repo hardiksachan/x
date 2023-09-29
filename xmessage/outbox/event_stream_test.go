@@ -9,32 +9,32 @@ import (
 )
 
 type testEventStream struct {
-	messages map[string]*xmessage.Message
+	publishings map[string]*xmessage.Publishing
 }
 
-func (es *testEventStream) Send(m *xmessage.Message) error {
-	if strings.HasPrefix(m.ID, "fail:") {
+func (es *testEventStream) Send(p *xmessage.Publishing) error {
+	if strings.HasPrefix(string(p.Topic), "fail:") {
 		return xerrors.E(xerrors.Message("failed to send message"))
 	}
 
-	if strings.HasPrefix(m.ID, "retry:") {
+	if strings.HasPrefix(string(p.Topic), "retry:") {
 		// Fail 60% of the time
 		if xtest.RandomInt(0, 100) < 60 {
 			return xerrors.E(xerrors.Message("failed to send message"))
 		}
 	}
 
-	es.messages[m.ID] = m
+	es.publishings[p.Message.ID] = p
 	return nil
 }
 
 func (es *testEventStream) isSent(id string) bool {
-	_, ok := es.messages[id]
+	_, ok := es.publishings[id]
 	return ok
 }
 
 func newTestEventStream() *testEventStream {
 	return &testEventStream{
-		messages: make(map[string]*xmessage.Message),
+		publishings: make(map[string]*xmessage.Publishing),
 	}
 }

@@ -15,27 +15,29 @@ import (
 func newMessage() *xmessage.Message {
 	return &xmessage.Message{
 		ID:      xtest.RandomString6(),
-		Topic:   xtest.RandomString6(),
 		Type:    xtest.RandomString6(),
 		Payload: []byte(xtest.RandomString6()),
 	}
 }
 
-func newFailableMessage() *xmessage.Message {
-	return &xmessage.Message{
-		ID:      "fail:" + xtest.RandomString6(),
-		Topic:   xtest.RandomString6(),
-		Type:    xtest.RandomString6(),
-		Payload: []byte(xtest.RandomString6()),
+func newPublishing() *xmessage.Publishing {
+	return &xmessage.Publishing{
+		Message: newMessage(),
+		Topic:   xmessage.Topic(xtest.RandomString6()),
 	}
 }
 
-func newRetriableMessage() *xmessage.Message {
-	return &xmessage.Message{
-		ID:      "retry:" + xtest.RandomString6(),
-		Topic:   xtest.RandomString6(),
-		Type:    xtest.RandomString6(),
-		Payload: []byte(xtest.RandomString6()),
+func newFailablePublishing() *xmessage.Publishing {
+	return &xmessage.Publishing{
+		Message: newMessage(),
+		Topic:   "fail:" + xmessage.Topic(xtest.RandomString6()),
+	}
+}
+
+func newRetriablePublishing() *xmessage.Publishing {
+	return &xmessage.Publishing{
+		Message: newMessage(),
+		Topic:   "retry:" + xmessage.Topic(xtest.RandomString6()),
 	}
 }
 
@@ -46,39 +48,39 @@ func TestStart(t *testing.T) {
 
 	o := outbox.New(ds, es, r)
 
-	failedMessages := o.FailedMessages()
+	fp := o.FailedPublishings()
 
 	err := o.Start(context.Background())
 	require.NoError(t, err)
 
-	t.Run("when messages are present in datastore, they are sent to event stream", func(t *testing.T) {
-		m := newMessage()
-		ds.AddMessage(m)
+	t.Run("when publishings are present in datastore, they are sent to event stream", func(t *testing.T) {
+		p := newPublishing()
+		ds.AddPublishing(p)
 
 		require.Eventually(t, func() bool {
-			return es.isSent(m.ID)
+			return es.isSent(p.Message.ID)
 		}, time.Second, time.Millisecond*100)
 	})
 
-	t.Run("when messages are sent to event stream, they are marked as processed", func(t *testing.T) {
-		m := newMessage()
-		ds.AddMessage(m)
+	t.Run("when publishings are sent to event stream, they are marked as processed", func(t *testing.T) {
+		p := newPublishing()
+		ds.AddPublishing(p)
 
 		require.Eventually(t, func() bool {
-			return ds.isProcessed(m.ID)
+			return ds.isProcessed(p.Message.ID)
 		}, time.Second, time.Millisecond*100)
 	})
 
-	t.Run("when messages fail to be sent to event stream, they are marked as processed", func(t *testing.T) {
-		m := newFailableMessage()
-		ds.AddMessage(m)
+	t.Run("when publishings fail to be sent to event stream, they are marked as processed", func(t *testing.T) {
+		p := newFailablePublishing()
+		ds.AddPublishing(p)
 
-		fm := <-failedMessages
+		fm := <-fp
 
-		require.Equal(t, m, fm.Msg)
+		require.Equal(t, p, fm.Publishing)
 
 		require.Eventually(t, func() bool {
-			return ds.isProcessed(m.ID)
+			return ds.isProcessed(p.Message.ID)
 		}, time.Second, time.Millisecond*100)
 	})
 }
@@ -93,16 +95,16 @@ func TestStartWithRetry(t *testing.T) {
 	err := o.Start(context.Background())
 	require.NoError(t, err)
 
-	t.Run("when messages fail to be sent to event stream, they are retried", func(t *testing.T) {
-		m := newRetriableMessage()
-		ds.AddMessage(m)
+	t.Run("when publishings fail to be sent to event stream, they are retried", func(t *testing.T) {
+		p := newRetriablePublishing()
+		ds.AddPublishing(p)
 
 		require.Eventually(t, func() bool {
-			return es.isSent(m.ID)
+			return es.isSent(p.Message.ID)
 		}, time.Second, time.Millisecond*100)
 
 		require.Eventually(t, func() bool {
-			return ds.isProcessed(m.ID)
+			return ds.isProcessed(p.Message.ID)
 		}, time.Second, time.Millisecond*100)
 	})
 }

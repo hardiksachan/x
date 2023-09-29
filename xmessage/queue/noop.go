@@ -10,7 +10,7 @@ import (
 type NoopBackbone struct{}
 
 // Send implements queue.Backbone.
-func (n *NoopBackbone) Send(context.Context, xmessage.Topic, *Message) error {
+func (n *NoopBackbone) Send(context.Context, *xmessage.Publishing) error {
 	return nil
 }
 

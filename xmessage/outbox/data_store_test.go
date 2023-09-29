@@ -8,25 +8,25 @@ import (
 	"github.com/Logistics-Coordinators/x/xmessage"
 )
 
-type messageWithStatus struct {
-	message   *xmessage.Message
-	processed bool
+type publishingWithStatus struct {
+	publishing *xmessage.Publishing
+	processed  bool
 }
 
 type testDataStore struct {
-	messages map[string]*messageWithStatus
+	publishings map[string]*publishingWithStatus
 	sync.RWMutex
 }
 
-func (ds *testDataStore) GetUnsentMessages(_ context.Context) (<-chan *xmessage.Message, error) {
-	msgChan := make(chan *xmessage.Message)
+func (ds *testDataStore) GetUnsentPublishings(_ context.Context) (<-chan *xmessage.Publishing, error) {
+	pubChan := make(chan *xmessage.Publishing)
 
 	go func() {
 		for {
 			ds.RLock()
-			for m := range ds.messages {
-				if !ds.messages[m].processed {
-					msgChan <- ds.messages[m].message
+			for p := range ds.publishings {
+				if !ds.publishings[p].processed {
+					pubChan <- ds.publishings[p].publishing
 				}
 			}
 			ds.RUnlock()
@@ -35,14 +35,14 @@ func (ds *testDataStore) GetUnsentMessages(_ context.Context) (<-chan *xmessage.
 		}
 	}()
 
-	return msgChan, nil
+	return pubChan, nil
 }
 
 func (ds *testDataStore) SetAsProcessed(_ context.Context, id string) error {
 	ds.Lock()
 	defer ds.Unlock()
 
-	ds.messages[id].processed = true
+	ds.publishings[id].processed = true
 	return nil
 }
 
@@ -50,19 +50,19 @@ func (ds *testDataStore) isProcessed(id string) bool {
 	ds.RLock()
 	defer ds.RUnlock()
 
-	return ds.messages[id].processed
+	return ds.publishings[id].processed
 }
 
-func (ds *testDataStore) AddMessage(m *xmessage.Message) {
-	ds.messages[m.ID] = &messageWithStatus{
-		message:   m,
-		processed: false,
+func (ds *testDataStore) AddPublishing(p *xmessage.Publishing) {
+	ds.publishings[p.Message.ID] = &publishingWithStatus{
+		publishing: p,
+		processed:  false,
 	}
 }
 
 func newTestDataStore() *testDataStore {
 	return &testDataStore{
-		messages: make(map[string]*messageWithStatus),
-		RWMutex:  sync.RWMutex{},
+		publishings: make(map[string]*publishingWithStatus),
+		RWMutex:     sync.RWMutex{},
 	}
 }
