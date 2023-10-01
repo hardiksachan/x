@@ -15,7 +15,7 @@ func (n *NoopBackbone) Send(context.Context, *xmessage.Publishing) error {
 }
 
 // Listen implements queue.Backbone.
-func (n *NoopBackbone) Listen() (<-chan *Delivery, error) {
+func (n *NoopBackbone) Listen() (<-chan xmessage.Delivery, error) {
 	return nil, nil
 }
 

@@ -23,3 +23,10 @@ type Publishing struct {
 	// Message is the message of the event.
 	Message *Message
 }
+
+// Delivery is a delivery of an event.
+type Delivery interface {
+	Message() *Message
+	Ack() error
+	Nack() error
+}
