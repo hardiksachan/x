@@ -8,6 +8,7 @@ import (
 
 	"github.com/Logistics-Coordinators/x/xerrors"
 	"github.com/Logistics-Coordinators/x/xlog"
+	"github.com/Logistics-Coordinators/x/xmessage/queue"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
@@ -73,10 +74,10 @@ func (rc RabbitClient) CreateQueue(queueName string, durable, autodelete bool) (
 }
 
 // CreateBinding is used to connect a queue to an Exchange using the binding rule
-func (rc RabbitClient) CreateBinding(name, binding, exchange string) error {
+func (rc RabbitClient) CreateBinding(name, binding string, exchange queue.Exchange) error {
 	// leaveing nowait false, having nowait set to false fill cause the channel to return an error and close if it cannot bind
 	// the final argument is the extra headers, but we wont be doing that now
-	return rc.ch.QueueBind(name, binding, exchange, false, nil)
+	return rc.ch.QueueBind(name, binding, string(exchange), false, nil)
 }
 
 // Send is used to publish a payload onto an exchange with a given routingkey
