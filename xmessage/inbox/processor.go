@@ -93,9 +93,12 @@ func (p *Processor) processMessages(ctx context.Context) {
 	for {
 		time.Sleep(p.pollingInterval)
 
-		message, _ := p.r.GetUnprocessedMessage(ctx, p.id, p.maxRetries, p.types)
+		message, err := p.r.GetUnprocessedMessage(ctx, p.id, p.maxRetries, p.types)
+		if err != nil {
+			continue
+		}
 
-		err := p.handle(ctx, message)
+		err = p.handle(ctx, message)
 		if err != nil {
 			_ = p.r.MarkForRetry(ctx, message.ID, time.Now().Add(p.retryInterval))
 			continue
