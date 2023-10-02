@@ -25,7 +25,7 @@ func (rc RabbitConsumer) Listen() (<-chan xmessage.Delivery, error) {
 
 	// Create a new Channel that can be used to listen for events
 	// This channel will be used to listen for events
-	rabbitDeliveries, err := rc.client.Consume(rc.queue, "consumer", false)
+	rabbitDeliveries, err := rc.client.Consume(rc.queue, rc.queue, false)
 	if err != nil {
 		return nil, xerrors.E(op, err)
 	}
