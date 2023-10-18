@@ -9,14 +9,15 @@ import (
 
 // Payload is the payload of a token.
 type Payload struct {
-	TokenID   string                 `json:"token_id"`
-	IssuedAt  time.Time              `json:"issued_at"`
-	ExpiredAt time.Time              `json:"expired_at"`
-	Embedding map[string]interface{} `json:"embedding"`
+	TokenID   string    `json:"token_id"`
+	UserID    string    `json:"user_id"`
+	Email     string    `json:"email"`
+	IssuedAt  time.Time `json:"issued_at"`
+	ExpiredAt time.Time `json:"expired_at"`
 }
 
 // NewPayload returns a new Payload.
-func NewPayload(embedding map[string]interface{}, duration time.Duration) (*Payload, error) {
+func NewPayload(userID, email string, duration time.Duration) (*Payload, error) {
 	op := xerrors.Op("xtoken.NewPayload")
 
 	tokenID, err := uuid.NewRandom()
@@ -26,9 +27,10 @@ func NewPayload(embedding map[string]interface{}, duration time.Duration) (*Payl
 
 	payload := &Payload{
 		TokenID:   tokenID.String(),
+		UserID:    userID,
+		Email:     email,
 		IssuedAt:  time.Now(),
 		ExpiredAt: time.Now().Add(duration),
-		Embedding: embedding,
 	}
 	return payload, nil
 }
