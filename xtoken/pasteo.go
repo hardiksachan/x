@@ -41,10 +41,10 @@ func NewPasetoMaker(symmetricKey string) (Maker, error) {
 }
 
 // CreateToken creates a new token.
-func (maker *PasetoMaker) CreateToken(userID, email string, duration time.Duration) (string, *Payload, error) {
+func (maker *PasetoMaker) CreateToken(embedding map[string]interface{}, duration time.Duration) (string, *Payload, error) {
 	op := xerrors.Op("xtoken.PasetoMaker.CreateToken")
 
-	payload, err := NewPayload(userID, email, duration)
+	payload, err := NewPayload(embedding, duration)
 	if err != nil {
 		return "", payload, xerrors.E(op, xerrors.Internal, err)
 	}

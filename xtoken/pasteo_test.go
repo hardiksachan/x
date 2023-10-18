@@ -15,24 +15,30 @@ func TestPasetoMaker(t *testing.T) {
 
 	email := xtest.RandomEmailString()
 	id := xtest.RandomString(32)
+
+	embedding := map[string]interface{}{
+		"email":   email,
+		"user_id": id,
+	}
+
 	duration := time.Minute
 
 	issuedAt := time.Now()
 	expiredAt := issuedAt.Add(duration)
 
-	token, payload, err := maker.CreateToken(id, email, duration)
+	token, payload, err := maker.CreateToken(embedding, duration)
 	require.NoError(t, err)
 	require.NotEmpty(t, token)
 	require.NotEmpty(t, payload)
-	require.Equal(t, id, payload.UserID)
-	require.Equal(t, email, payload.Email)
+	require.Equal(t, id, payload.Embedding["user_id"])
+	require.Equal(t, email, payload.Embedding["email"])
 
 	payload, err = maker.VerifyToken(token)
 	require.NoError(t, err)
 	require.NotEmpty(t, token)
 
 	require.NotZero(t, payload.TokenID)
-	require.Equal(t, email, payload.Email)
+	require.Equal(t, email, payload.Embedding["email"])
 	require.WithinDuration(t, issuedAt, payload.IssuedAt, time.Second)
 	require.WithinDuration(t, expiredAt, payload.ExpiredAt, time.Second)
 }
@@ -41,7 +47,7 @@ func TestExpiredPasetoToken(t *testing.T) {
 	maker, err := xtoken.NewPasetoMaker(xtest.RandomString(32))
 	require.NoError(t, err)
 
-	token, payload, err := maker.CreateToken(xtest.RandomString(32), xtest.RandomEmailString(), -time.Minute)
+	token, payload, err := maker.CreateToken(map[string]interface{}{}, -time.Minute)
 	require.NoError(t, err)
 	require.NotEmpty(t, token)
 	require.NotEmpty(t, payload)
