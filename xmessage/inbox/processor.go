@@ -100,6 +100,7 @@ func (p *Processor) processMessages(ctx context.Context) {
 
 		err = p.handle(ctx, message)
 		if err != nil {
+			xlog.Infof("error handling message %s: %+v", message.Type, err)
 			_ = p.r.MarkForRetry(ctx, message.ID, time.Now().Add(p.retryInterval))
 			continue
 		}
