@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Logistics-Coordinators/x/xmessage/outbox"
+	"github.com/hardiksachan/x/xmessage/outbox"
 	"github.com/stretchr/testify/require"
 )
 

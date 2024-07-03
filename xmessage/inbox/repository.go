@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/Logistics-Coordinators/x/xmessage"
+	"github.com/hardiksachan/x/xmessage"
 )
 
 // Repository is the interface that provides a repository for messages

@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Logistics-Coordinators/x/xtest"
-	"github.com/Logistics-Coordinators/x/xtoken"
+	"github.com/hardiksachan/x/xtest"
+	"github.com/hardiksachan/x/xtoken"
 	"github.com/stretchr/testify/require"
 )
 

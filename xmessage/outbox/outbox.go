@@ -4,9 +4,9 @@ package outbox
 import (
 	"context"
 
-	"github.com/Logistics-Coordinators/x/xerrors"
-	"github.com/Logistics-Coordinators/x/xmessage"
-	"github.com/Logistics-Coordinators/x/xretry"
+	"github.com/hardiksachan/x/xerrors"
+	"github.com/hardiksachan/x/xmessage"
+	"github.com/hardiksachan/x/xretry"
 )
 
 const (

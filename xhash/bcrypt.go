@@ -2,7 +2,7 @@
 package xhash
 
 import (
-	"github.com/Logistics-Coordinators/x/xerrors"
+	"github.com/hardiksachan/x/xerrors"
 	"golang.org/x/crypto/bcrypt"
 )
 

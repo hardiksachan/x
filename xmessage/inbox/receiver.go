@@ -4,8 +4,8 @@ package inbox
 import (
 	"context"
 
-	"github.com/Logistics-Coordinators/x/xerrors"
-	"github.com/Logistics-Coordinators/x/xmessage"
+	"github.com/hardiksachan/x/xerrors"
+	"github.com/hardiksachan/x/xmessage"
 )
 
 // Receiver is a idempotent inbox

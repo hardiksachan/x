@@ -1,4 +1,4 @@
-module github.com/Logistics-Coordinators/x
+module github.com/hardiksachan/x
 
 go 1.21.1
 

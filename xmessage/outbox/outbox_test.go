@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Logistics-Coordinators/x/xmessage"
-	"github.com/Logistics-Coordinators/x/xmessage/outbox"
-	"github.com/Logistics-Coordinators/x/xretry"
-	"github.com/Logistics-Coordinators/x/xtest"
+	"github.com/hardiksachan/x/xmessage"
+	"github.com/hardiksachan/x/xmessage/outbox"
+	"github.com/hardiksachan/x/xretry"
+	"github.com/hardiksachan/x/xtest"
 	"github.com/stretchr/testify/require"
 )
 

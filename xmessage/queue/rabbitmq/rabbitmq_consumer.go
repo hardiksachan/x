@@ -1,8 +1,8 @@
 package rabbitmq
 
 import (
-	"github.com/Logistics-Coordinators/x/xerrors"
-	"github.com/Logistics-Coordinators/x/xmessage"
+	"github.com/hardiksachan/x/xerrors"
+	"github.com/hardiksachan/x/xmessage"
 )
 
 // RabbitConsumer is a wrapper around RabbitClient that exposes capabilities to listen for events

@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/Logistics-Coordinators/x/xerrors"
-	"github.com/Logistics-Coordinators/x/xmessage"
+	"github.com/hardiksachan/x/xerrors"
+	"github.com/hardiksachan/x/xmessage"
 )
 
 type memMessage struct {

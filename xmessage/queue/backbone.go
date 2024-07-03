@@ -4,7 +4,7 @@ package queue
 import (
 	"context"
 
-	"github.com/Logistics-Coordinators/x/xmessage"
+	"github.com/hardiksachan/x/xmessage"
 )
 
 // Publisher is a producer of events.

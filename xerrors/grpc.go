@@ -1,7 +1,7 @@
 package xerrors
 
 import (
-	"github.com/Logistics-Coordinators/x/xlog"
+	"github.com/hardiksachan/x/xlog"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

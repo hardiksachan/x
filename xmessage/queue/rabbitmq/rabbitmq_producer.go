@@ -3,10 +3,10 @@ package rabbitmq
 import (
 	"context"
 
-	"github.com/Logistics-Coordinators/x/xerrors"
-	"github.com/Logistics-Coordinators/x/xlog"
-	"github.com/Logistics-Coordinators/x/xmessage"
-	"github.com/Logistics-Coordinators/x/xmessage/queue"
+	"github.com/hardiksachan/x/xerrors"
+	"github.com/hardiksachan/x/xlog"
+	"github.com/hardiksachan/x/xmessage"
+	"github.com/hardiksachan/x/xmessage/queue"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 

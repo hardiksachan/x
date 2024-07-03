@@ -1,7 +1,7 @@
 package rabbitmq
 
 import (
-	"github.com/Logistics-Coordinators/x/xmessage"
+	"github.com/hardiksachan/x/xmessage"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 

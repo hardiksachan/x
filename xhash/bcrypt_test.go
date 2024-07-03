@@ -3,8 +3,8 @@ package xhash_test
 import (
 	"testing"
 
-	"github.com/Logistics-Coordinators/x/xhash"
-	"github.com/Logistics-Coordinators/x/xtest"
+	"github.com/hardiksachan/x/xhash"
+	"github.com/hardiksachan/x/xtest"
 	"github.com/stretchr/testify/require"
 )
 

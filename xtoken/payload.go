@@ -3,8 +3,8 @@ package xtoken
 import (
 	"time"
 
-	"github.com/Logistics-Coordinators/x/xerrors"
 	"github.com/google/uuid"
+	"github.com/hardiksachan/x/xerrors"
 )
 
 // Payload is the payload of a token.

@@ -4,9 +4,9 @@ import (
 	"context"
 	"strings"
 
-	"github.com/Logistics-Coordinators/x/xerrors"
-	"github.com/Logistics-Coordinators/x/xmessage"
-	"github.com/Logistics-Coordinators/x/xtest"
+	"github.com/hardiksachan/x/xerrors"
+	"github.com/hardiksachan/x/xmessage"
+	"github.com/hardiksachan/x/xtest"
 )
 
 type mockPublishingStream struct {

@@ -4,7 +4,7 @@ package xretry
 import (
 	"time"
 
-	"github.com/Logistics-Coordinators/x/xerrors"
+	"github.com/hardiksachan/x/xerrors"
 )
 
 // RetryPolicy is the retry policy

@@ -17,7 +17,7 @@ package main
 
 import (
   "fmt"
-  "github.com/Logistics-Coordinators/x/xretry"
+  "github.com/hardiksachan/x/xretry"
   "time"
 )
 
@@ -51,7 +51,7 @@ In this example, the function `f` will be retried immediately 3 times if it fail
 To use the `xretry` package in your Go project, you need to download it using the `go get` command:
 
 ```bash
-go get github.com/Logistics-Coordinators/x
+go get github.com/hardiksachan/x
 ```
 
 For more details about the `xretry` package, please refer to the source code in `xretry/retrier.go`.

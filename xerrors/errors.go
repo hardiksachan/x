@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"runtime"
 
-	"github.com/Logistics-Coordinators/x/xlog"
+	"github.com/hardiksachan/x/xlog"
 )
 
 type (

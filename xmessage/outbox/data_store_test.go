@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Logistics-Coordinators/x/xmessage"
+	"github.com/hardiksachan/x/xmessage"
 )
 
 type publishingWithStatus struct {
